@@ -2,8 +2,8 @@
 // @name           LeproSortComments
 // @namespace      http://kt.pri.ee/lepra/
 // @description    Сортирует комментарии по рейтингу
-// @include        http://leprosorium.ru/comments/*
-// @include        http://*.leprosorium.ru/comments/*
+// @include        https://leprosorium.ru/comments/*
+// @include        https://*.leprosorium.ru/comments/*
 // ==/UserScript==
 
 xpathOneEx = function(query, root) {
@@ -17,19 +17,19 @@ xpathMany = function(query) {
 }
 
 addButton = function(title, onClick) {
-	var elButton = document.createElement('td');
+	var elButton = document.createElement('span');
 	elButton.innerHTML = "<a href='' onclick='return false;'>" + title + "</a>";
 	elButton.childNodes[0].addEventListener("click", onClick, false);
-	panel = xpathOne("//table[@class='category']//tr")
+	panel = xpathOneEx("//div[@class='b-comments_controls']//span",document)
 	panel.appendChild(elButton);
 }
 
 sortComments = function() {
-	var comments = xpathMany("//div[@id='js-commentsHolder']/div[contains(@class,'post')]");
+	var comments = xpathMany("//div[@id='js-commentsHolder']/div[contains(@class,'comment')]");
 	var a = Array();
 	for (var i = 0; i < comments.snapshotLength; i++) {
 		var elm = comments.snapshotItem(i);
-		var rating = xpathOneEx("div//span[@class='rating']/em", elm).innerHTML;
+		var rating = xpathOneEx("div//div[contains(@class,'vote')]/strong[@class='vote_result']", elm).innerHTML;
 		a[i] = {'post': elm, 'rating': rating};
 	}
 	a.sort(function(a,b) { return b.rating - a.rating;});
